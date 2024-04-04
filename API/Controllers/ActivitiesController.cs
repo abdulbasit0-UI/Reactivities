@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using Application.Activities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -7,25 +9,26 @@ namespace API.Controllers
 {
     public class ActivitiesController : BaseApiController
     {
-        private readonly DataContext _context;
-        public ActivitiesController(DataContext context)
+        private readonly IMediator _mediator;
+
+        public ActivitiesController(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
+
         }
 
 
         [HttpGet]
         public async Task<ActionResult<List<Activity>>> GetActivities()
         {
-            var activities = await _context.Activities.ToListAsync();
+            var activities = await _mediator.Send(new List.Query());
             return Ok(activities);
         }
         [HttpGet("{id}")]
 
         public async Task<ActionResult<Activity>> getActivity(Guid id)
         {
-            var activity = await _context.Activities.FindAsync(id);
-            return Ok(activity);
+            return Ok();
         }
 
 
